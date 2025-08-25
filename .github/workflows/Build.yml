@@ -14,4 +14,4 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: app
+        working-directory: demo
