@@ -99,7 +99,7 @@ class DemoApplicationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().length);
-        assertEquals(question, response.getBody()[0].getQuestion());
+        assertEquals(question, response.getBody()[0].getQuestion()); 
     }
     
     
