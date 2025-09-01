@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.demo.object.Poll;
 import com.example.demo.object.User;
+import com.example.demo.object.Vote;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DemoApplicationTests {
@@ -102,7 +103,63 @@ class DemoApplicationTests {
         assertEquals(question, response.getBody()[0].getQuestion()); 
     }
     
+    @Test
+    public void testUser2Votes() {
+        // Arrange
+    	String question = "question";
+    	String[] options = {"Red", "Blue", "Green"};
+        User user1 = restTemplate.postForEntity( "/users?username=user1&email=user1@example.com", null, User.class).getBody();
+        User user2 = restTemplate.postForEntity( "/users?username=user2&email=user2@example.com", null, User.class).getBody();
+        Poll poll = restTemplate.postForEntity(
+                "/polls?username=" + user1.getUsername() + "&question=" + question+ "&validuntil="+1,
+               options,
+               Poll.class
+       ).getBody();
+
+        
+        
+        // Act
+        // Vote first
+       restTemplate.postForEntity("/votes?username=" + user2.getUsername() + "&pollquestion=" + question + "&optionindex=0", null, Vote.class);
+       
+       // Change vote
+        //restTemplate.put( "/votes?username=" + user2.getUsername() + "&pollquestion=" + poll.getQuestion() + "&optionindex=2", null);
+
+       ResponseEntity<Vote[]> response = restTemplate.getForEntity(  "/votes?username="+ user2.getUsername(), Vote[].class);
     
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().length);
+        assertEquals("Red", response.getBody()[0].getVoteoption().getCaption());
+    }
+    
+    @Test
+    public void testDeletePollAndListVotesEmpty() {
+        // Arrange
+    	String question = "question";
+    	String[] options = {"Red", "Blue", "Green"};
+        User user1 = restTemplate.postForEntity( "/users?username=user1&email=user1@example.com", null, User.class).getBody();
+        User user2 = restTemplate.postForEntity( "/users?username=user2&email=user2@example.com", null, User.class).getBody();
+        Poll poll = restTemplate.postForEntity(
+                "/polls?username=" + user1.getUsername() + "&question=" + question+ "&validuntil="+1,
+               options,
+               Poll.class
+       ).getBody();
+
+
+        restTemplate.postForEntity("/votes?username=" + user2.getUsername() + "&pollquestion=" + question + "&optionindex=0", null, Vote.class);
+        
+
+        // Act
+        restTemplate.delete("/polls?question=" + question);
+        ResponseEntity<Vote[]> response = restTemplate.getForEntity(  "/votes?username="+ user2.getUsername(), Vote[].class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(0, response.getBody().length);
+    }
     
 
 }
