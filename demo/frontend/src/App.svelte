@@ -19,7 +19,7 @@ function votepoll(index,question){
         const result = fetch("http://localhost:8080/votes?username="+selectedUser+"&pollquestion="+question+"&optionindex="+index, {
             method: "POST",
         })
-        window.location.reload();
+        window.location.reload(); //
     }
 
 }
