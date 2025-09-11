@@ -7,9 +7,9 @@ import java.time.Instant;
 public class Vote {
 
 	private Instant publishedAt;
-    @JsonBackReference
+    @JsonBackReference("voted")
 	private User user;
-    @JsonBackReference
+    @JsonBackReference("has")
 	private VoteOption voteoption;
 
 	public Instant getPublishedAt() {

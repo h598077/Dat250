@@ -11,9 +11,9 @@ public class VoteOption {
 	private String caption;
 	private int presentationOrder;
 
-    @JsonManagedReference
+    @JsonManagedReference("has")
 	private List<Vote> vote = new ArrayList<>();
-	@JsonBackReference
+	@JsonBackReference("contains")
 	private Poll poll;
 	
 	public String getCaption() {

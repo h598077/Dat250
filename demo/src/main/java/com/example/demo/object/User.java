@@ -10,9 +10,9 @@ public class User {
 	
 	private String username;
 	private String email;
-    @JsonManagedReference
+    @JsonManagedReference("voted")
 	private List<Vote> vote = new ArrayList<>();
-	 @JsonManagedReference
+	 @JsonManagedReference("creates")
 	private List<Poll> poll = new ArrayList<>();
 	public String getUsername() {
 		return username;

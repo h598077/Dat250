@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,16 +123,23 @@ class DemoApplicationTests {
         // Vote first
        restTemplate.postForEntity("/votes?username=" + user2.getUsername() + "&pollquestion=" + question + "&optionindex=0", null, Vote.class);
        
-       // Change vote
-        //restTemplate.put( "/votes?username=" + user2.getUsername() + "&pollquestion=" + poll.getQuestion() + "&optionindex=2", null);
+     
 
        ResponseEntity<Vote[]> response = restTemplate.getForEntity(  "/votes?username="+ user2.getUsername(), Vote[].class);
-    
+       // Re-fetch updated poll from backend
+       
+       ResponseEntity<Poll[]> pollsResponse = restTemplate.getForEntity("/polls", Poll[].class);
+       Poll[] polls = pollsResponse.getBody();
+       Poll updatedPoll = Arrays.stream(polls)
+               .filter(p -> question.equals(p.getQuestion()))
+               .findFirst()
+               .orElseThrow();
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().length);
-        assertEquals("Red", response.getBody()[0].getVoteoption().getCaption());
+        assertEquals(1, updatedPoll.getVoteoption().get(0).getVote().size());
+      
     }
     
     // TestListUserAfterFirst fails with this

@@ -12,9 +12,9 @@ public class Poll {
 	private String question;
 	private Instant publishedAt;
 	private Instant validUntil;
-	 @JsonBackReference
+	 @JsonBackReference("creates")
 	private User user;
-	 @JsonManagedReference
+	 @JsonManagedReference("contains")
 	private List<VoteOption> voteoption = new ArrayList<>();
 	
 	public String getQuestion() {
