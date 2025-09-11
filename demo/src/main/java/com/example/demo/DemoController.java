@@ -6,12 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.object.Poll;
 import com.example.demo.object.User;
@@ -19,6 +14,7 @@ import com.example.demo.object.Vote;
 import com.example.demo.object.VoteOption;
 
 @RestController
+@CrossOrigin
 public class DemoController {
 	
 	
@@ -30,10 +26,7 @@ public class DemoController {
 	
 	
 	
-	@GetMapping("/")
-    public String hello() {
-      return "Hello World";
-    }
+
 	
 	
 	@PostMapping("/users")
@@ -45,10 +38,10 @@ public class DemoController {
 	    public Collection<User> listUsers() {
 	        return domainmanager.listUsers();
 	    }
-	 
-	
-	 
-	 
+
+
+
+
 	 
 	 
 	 

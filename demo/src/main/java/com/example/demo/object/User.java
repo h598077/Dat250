@@ -10,7 +10,7 @@ public class User {
 	
 	private String username;
 	private String email;
-	
+    @JsonManagedReference
 	private List<Vote> vote = new ArrayList<>();
 	 @JsonManagedReference
 	private List<Poll> poll = new ArrayList<>();

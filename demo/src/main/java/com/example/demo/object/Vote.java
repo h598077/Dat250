@@ -1,11 +1,15 @@
 package com.example.demo.object;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.time.Instant;
 
 public class Vote {
 
 	private Instant publishedAt;
+    @JsonBackReference
 	private User user;
+    @JsonBackReference
 	private VoteOption voteoption;
 
 	public Instant getPublishedAt() {

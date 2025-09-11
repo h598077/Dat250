@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 public class VoteOption {
 
 	private String caption;
 	private int presentationOrder;
-	
-	
+
+    @JsonManagedReference
 	private List<Vote> vote = new ArrayList<>();
 	@JsonBackReference
 	private Poll poll;

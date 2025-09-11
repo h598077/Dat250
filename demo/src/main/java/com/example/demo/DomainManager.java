@@ -1,11 +1,7 @@
 package com.example.demo;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 
@@ -64,11 +60,26 @@ public class DomainManager {
 	    }
 	
 	public Vote vote(User user, Poll poll, VoteOption option) {
+
+        // Find any existing vote by this user in this poll
+        Optional<Vote> existingVote = user.getVote().stream()
+                .filter(v -> poll.getVoteoption().contains(v.getVoteoption()))
+                .findFirst();
+
+        // Remove it if present
+        existingVote.ifPresent(v -> {
+            user.getVote().remove(v);
+            v.getVoteoption().getVote().remove(v);
+        });
+
 		Vote vote = new Vote();
 		vote.setPublishedAt(Instant.now());
 		vote.setVoteoption(option);
-		user.getVote().removeIf(v -> poll.getVoteoption().contains(v.getVoteoption())); // Remove previous vote
+        vote.setUser(user);
+
 		user.getVote().add(vote);
+
+        option.getVote().add(vote);
 		return vote;
 		
 	}
