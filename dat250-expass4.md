@@ -28,6 +28,7 @@ and some other properties in the test itself
                 .property("hibernate.use_sql_comments", "true")
 
 Then we get the whole  table
+
 <img width="616" height="650" alt="{F13E3DF1-F352-44EE-A51F-5C501332861A}" src="https://github.com/user-attachments/assets/753b7700-aa2e-46a0-ad18-f126bccd616f" />
 
 
