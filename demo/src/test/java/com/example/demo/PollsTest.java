@@ -17,7 +17,7 @@ import com.example.demo.object.VoteOption;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceConfiguration;
-
+import org.h2.tools.Server;
 // TODO: you may have to adjust the imports to import the domain model entities
 // import no.hvl.dat250.jpa.polls.Poll;
 // import no.hvl.dat250.jpa.polls.User;

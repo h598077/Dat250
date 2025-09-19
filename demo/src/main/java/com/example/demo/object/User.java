@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -28,7 +29,7 @@ public class User {
     @JsonManagedReference("voted")
 	private List<Vote> vote = new ArrayList<>();
     @OneToMany
-	 @JsonManagedReference("creates")
+    @JsonIgnore
 	private List<Poll> poll = new ArrayList<>();
 	public String getUsername() {
 		return username;

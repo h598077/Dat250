@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ public class VoteOption {
 	private List<Vote> vote = new ArrayList<>();
     @ManyToOne
     @JoinColumn
-	@JsonBackReference("contains")
+    @JsonIgnore
 	private Poll poll;
 	
 	public String getCaption() {
