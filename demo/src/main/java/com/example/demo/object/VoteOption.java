@@ -6,13 +6,29 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+@Entity
+@Table(name = "vote_options")
 public class VoteOption {
 
+	 @Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int voteopid;
 	private String caption;
 	private int presentationOrder;
 
+	@OneToMany
     @JsonManagedReference("has")
 	private List<Vote> vote = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn
 	@JsonBackReference("contains")
 	private Poll poll;
 	
@@ -43,6 +59,9 @@ public class VoteOption {
 	}
 	public VoteOption() {
 ;
+	}
+	public VoteOption(String caption) {
+		this.caption=caption;
 	}
 	
 	
