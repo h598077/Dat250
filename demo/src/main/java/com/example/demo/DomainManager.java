@@ -36,7 +36,7 @@ public class DomainManager {
 	
 	public Poll createPoll(User user, String question, Instant validUntil, List<String> option) {
 		Poll poll = new Poll();
-		poll.setUser(user);
+		poll.setCreatedBy(user);
 		poll.setQuestion(question);
 		poll.setPublishedAt(Instant.now());
 		poll.setValidUntil(validUntil);
@@ -48,7 +48,7 @@ public class DomainManager {
 			voteoption.setPoll(poll);
 			voteoptionlist.add(voteoption);
 		}
-		poll.setVoteoption(voteoptionlist);
+		poll.setOptions(voteoptionlist);
 		user.getPoll().add(poll);
 		polls.put(question, poll);
 		return poll;
@@ -63,18 +63,18 @@ public class DomainManager {
 
         // Find any existing vote by this user in this poll
         Optional<Vote> existingVote = user.getVote().stream()
-                .filter(v -> poll.getVoteoption().contains(v.getVoteoption()))
+                .filter(v -> poll.getOptions().contains(v.getVotesOn()))
                 .findFirst();
 
         // Remove it if present
         existingVote.ifPresent(v -> {
             user.getVote().remove(v);
-            v.getVoteoption().getVote().remove(v);
+            v.getVotesOn().getVote().remove(v);
         });
 
 		Vote vote = new Vote();
 		vote.setPublishedAt(Instant.now());
-		vote.setVoteoption(option);
+		vote.setVotesOn(option);
         vote.setUser(user);
 
 		user.getVote().add(vote);
@@ -90,7 +90,7 @@ public class DomainManager {
 	public void deletePoll(Poll poll) {
 		polls.remove(poll.getQuestion());
 		users.values().forEach(u -> u.getPoll().remove(poll));
-		users.values().forEach(u -> u.getVote().removeIf(v -> poll.getVoteoption().contains(v.getVoteoption())));
+		users.values().forEach(u -> u.getVote().removeIf(v -> poll.getOptions().contains(v.getVotesOn())));
 	}
 	
 }

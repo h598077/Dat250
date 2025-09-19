@@ -26,11 +26,12 @@ public class VoteOption {
 	private int presentationOrder;
 
 	@OneToMany
-    @JsonManagedReference("has")
+	  @JsonManagedReference("has")
 	private List<Vote> vote = new ArrayList<>();
-    @ManyToOne
+  
+	@ManyToOne
     @JoinColumn
-    @JsonIgnore
+    @JsonBackReference("contains")
 	private Poll poll;
 	
 	public String getCaption() {

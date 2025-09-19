@@ -82,7 +82,7 @@ class DemoApplicationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(question, response.getBody().getQuestion());
-        assertEquals(options.length, response.getBody().getVoteoption().size());
+        assertEquals(options.length, response.getBody().getOptions().size());
     }
 
     
@@ -138,7 +138,7 @@ class DemoApplicationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().length);
-        assertEquals(1, updatedPoll.getVoteoption().get(0).getVote().size());
+        assertEquals(1, updatedPoll.getOptions().get(0).getVote().size());
       
     }
     

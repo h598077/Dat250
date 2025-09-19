@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -28,11 +29,11 @@ public class Poll {
 	private Instant validUntil;
 	@ManyToOne
 	 @JoinColumn(name = "created_by_user")
-	 @JsonBackReference("creates")
+	@JsonBackReference("creates")
 	private User createdBy;
 	
 	@OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
-	 @JsonManagedReference("contains")
+	@JsonManagedReference("contains")
 	private List<VoteOption> options  = new ArrayList<>();
 	
 	public String getQuestion() {
@@ -54,17 +55,18 @@ public class Poll {
 		this.validUntil = validUntil;
 	}
 	
-	public User getUser() {
+
+	public User getCreatedBy() {
 		return createdBy;
 	}
-	public void setUser(User user) {
-		this.createdBy = user;
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
-	public List<VoteOption> getVoteoption() {
+	public List<VoteOption> getOptions() {
 		return options;
 	}
-	public void setVoteoption(List<VoteOption> voteoption) {
-		this.options = voteoption;
+	public void setOptions(List<VoteOption> options) {
+		this.options = options;
 	}
 	public Poll() {
 	}
@@ -82,7 +84,7 @@ public class Poll {
     * registered VoteOption has presentationOrder=1 ans so on.
     */
    public VoteOption addVoteOption(String caption) {
-        List<VoteOption> options = this.getVoteoption();
+        List<VoteOption> options = this.getOptions();
         int size =  options.size();
         VoteOption voteoption= new VoteOption(caption);
         voteoption.setPresentationOrder(size);

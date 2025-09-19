@@ -75,7 +75,7 @@ public class DemoController {
 	                     @RequestParam("optionindex") int optionIndex) {
 	        User user = domainmanager.listUsers().stream().filter(u -> u.getUsername().equals(username)).findFirst().orElseThrow();
 	        Poll poll = domainmanager.listPolls().stream().filter(p -> p.getQuestion().equals(pollQuestion)).findFirst().orElseThrow();
-	        VoteOption option = poll.getVoteoption().get(optionIndex);
+	        VoteOption option = poll.getOptions().get(optionIndex);
 	        return domainmanager.vote(user, poll, option);
 	    }
 	 
