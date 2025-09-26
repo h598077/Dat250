@@ -24,6 +24,11 @@ public class Poll {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int pid;
 	
+	 
+	public int getPid() {
+		return pid;
+	}
+
 	private String question;
 	private Instant publishedAt;
 	private Instant validUntil;

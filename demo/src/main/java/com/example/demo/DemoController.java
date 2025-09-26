@@ -3,6 +3,7 @@ package com.example.demo;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,14 @@ public class DemoController {
 		this.domainmanager=domain;
 	}
 	
-	
+	@GetMapping("/polls/{pollId}/votes")
+	public Map<Integer, Long> getPollVotes(@PathVariable("pollId") int pollId) {
+	    Poll poll = domainmanager.listPolls().stream()
+	            .filter(p -> p.getPid() == pollId)
+	            .findFirst()
+	            .orElseThrow();
+	    return domainmanager.getPollVotes(poll);
+	}
 	
 
 	

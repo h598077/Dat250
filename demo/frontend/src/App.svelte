@@ -68,7 +68,7 @@ It is loading...
     {#each ready as poll}
         <p>  <b>{poll.question}</b> </p>
         <ul>
-            {#each poll.voteoption as option,i}
+            {#each poll.options as option,i}
                 <li>{option.caption} <button on:click={() => votepoll(i,poll.question)}>Vote</button> Votes:{option.vote.length}</li>
             {/each}
         </ul>

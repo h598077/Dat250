@@ -2,6 +2,7 @@ package com.example.demo;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,8 @@ import com.example.demo.object.User;
 import com.example.demo.object.Vote;
 import com.example.demo.object.VoteOption;
 
+import redis.clients.jedis.Jedis;
+
 @Component
 public class DomainManager {
 
@@ -17,7 +20,9 @@ public class DomainManager {
 	private final Map<String, Poll> polls = new HashMap<>();
 	
 	
-	
+	private static final String REDIS_HOST = "localhost";
+    private static final int REDIS_PORT = 6379;
+    private static final int CACHE_TTL_SECONDS = 300; // 5 minutes
 	
 	
 	public User createUser(String username, String email) {
@@ -71,7 +76,7 @@ public class DomainManager {
             user.getVote().remove(v);
             v.getVotesOn().getVote().remove(v);
         });
-
+        // Create new vote
 		Vote vote = new Vote();
 		vote.setPublishedAt(Instant.now());
 		vote.setVotesOn(option);
@@ -80,9 +85,64 @@ public class DomainManager {
 		user.getVote().add(vote);
 
         option.getVote().add(vote);
+        
+        
+     // --- Update Redis cache ---
+        String key = "poll:" + poll.getPid() + ":votes";
+        String field = "option:" + option.getPresentationOrder(); 
+
+        try (Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT)) {
+            // Increment the count for this option
+            jedis.hincrBy(key, field, 1);
+
+            // Set TTL to ensure cache expires after some time
+            jedis.expire(key, CACHE_TTL_SECONDS);
+        }
+        
+        
+        
 		return vote;
 		
 	}
+	
+	public Map<Integer, Long> getPollVotes(Poll poll) {
+	    String key = "poll:" + poll.getPid() + ":votes";
+
+	    try (Jedis jedis = new Jedis(REDIS_HOST, REDIS_PORT)) {
+	        Map<String, String> cached = jedis.hgetAll(key);
+
+	        if (!cached.isEmpty()) {
+	            // Cache hit → convert fields to Integer vote counts
+	            return cached.entrySet().stream()
+	                    .collect(Collectors.toMap(
+	                            e -> Integer.parseInt(e.getKey().replace("option:", "")),
+	                            e -> Long.parseLong(e.getValue())
+	                    ));
+	        }
+
+	        // If not cached, compute from DB
+	        Map<Integer, Long> aggregatedVotes = new HashMap<>();
+	        for (VoteOption option : poll.getOptions()) {
+	            aggregatedVotes.put(option.getPresentationOrder(), (long) option.getVote().size());
+	        }
+	        
+	        // Store in Redis
+	        Map<String, String> toCache = aggregatedVotes.entrySet().stream()
+	                .collect(Collectors.toMap(
+	                        e -> "option:" + e.getKey(),
+	                        e -> String.valueOf(e.getValue())
+	                ));
+
+	        jedis.hset(key, toCache);
+	        jedis.expire(key, CACHE_TTL_SECONDS);
+
+	        return aggregatedVotes;
+	    }
+	}
+	
+
+	
+	
 	  public Collection<Vote> listVotes(User user) {
 	        return user.getVote();
 	    }
