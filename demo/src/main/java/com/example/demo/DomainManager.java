@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.object.Poll;
+import com.example.demo.object.RabbitMQBroker;
 import com.example.demo.object.User;
 import com.example.demo.object.Vote;
 import com.example.demo.object.VoteOption;
@@ -56,6 +57,18 @@ public class DomainManager {
 		poll.setOptions(voteoptionlist);
 		user.getPoll().add(poll);
 		polls.put(question, poll);
+		  RabbitMQBroker rabbitMQBroker = new RabbitMQBroker("localhost"); // pass host
+		 try {
+		        // Create RabbitMQ topic
+		        rabbitMQBroker.createTopic(question);
+
+		        // Subscribe PollApp to handle votes
+		        rabbitMQBroker.subscribe(question);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		
+		
 		return poll;
 		
 	}
@@ -64,7 +77,7 @@ public class DomainManager {
 	        return polls.values();
 	    }
 	
-	public Vote vote(User user, Poll poll, VoteOption option) {
+	public Vote vote(User user, Poll poll, VoteOption option) throws Exception {
 
         // Find any existing vote by this user in this poll
         Optional<Vote> existingVote = user.getVote().stream()
@@ -99,7 +112,14 @@ public class DomainManager {
             jedis.expire(key, CACHE_TTL_SECONDS);
         }
         
-        
+        // --- Publish vote event to RabbitMQ ---
+        RabbitMQBroker broker = new RabbitMQBroker("localhost"); 
+        String topicName = poll.getQuestion(); 
+        String message = option.getCaption();  
+        int votes = option.getVote().size();
+        String name = user.getUsername();
+ 
+        broker.publish(topicName,"Question: "+ topicName  + " Name: "+name+ " voted on "+ message+ " Votes:"+votes);
         
 		return vote;
 		

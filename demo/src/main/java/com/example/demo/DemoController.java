@@ -80,7 +80,7 @@ public class DemoController {
 	 @PostMapping("/votes")
 	    public Vote vote(@RequestParam("username") String username,
 	                     @RequestParam("pollquestion") String pollQuestion,
-	                     @RequestParam("optionindex") int optionIndex) {
+	                     @RequestParam("optionindex") int optionIndex) throws Exception {
 	        User user = domainmanager.listUsers().stream().filter(u -> u.getUsername().equals(username)).findFirst().orElseThrow();
 	        Poll poll = domainmanager.listPolls().stream().filter(p -> p.getQuestion().equals(pollQuestion)).findFirst().orElseThrow();
 	        VoteOption option = poll.getOptions().get(optionIndex);
