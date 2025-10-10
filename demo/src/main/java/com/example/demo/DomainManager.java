@@ -21,7 +21,7 @@ public class DomainManager {
 	private final Map<String, Poll> polls = new HashMap<>();
 	
 	
-	private static final String REDIS_HOST = "localhost";
+	private static final String REDIS_HOST = "redis";
     private static final int REDIS_PORT = 6379;
     private static final int CACHE_TTL_SECONDS = 300; // 5 minutes
 	
@@ -57,7 +57,7 @@ public class DomainManager {
 		poll.setOptions(voteoptionlist);
 		user.getPoll().add(poll);
 		polls.put(question, poll);
-		  RabbitMQBroker rabbitMQBroker = new RabbitMQBroker("localhost"); // pass host
+		  RabbitMQBroker rabbitMQBroker = new RabbitMQBroker("rabbitmq"); // pass host
 		 try {
 		        // Create RabbitMQ topic
 		        rabbitMQBroker.createTopic(question);
@@ -113,7 +113,7 @@ public class DomainManager {
         }
         
         // --- Publish vote event to RabbitMQ ---
-        RabbitMQBroker broker = new RabbitMQBroker("localhost"); 
+        RabbitMQBroker broker = new RabbitMQBroker("rabbitmq"); 
         String topicName = poll.getQuestion(); 
         String message = option.getCaption();  
         int votes = option.getVote().size();
